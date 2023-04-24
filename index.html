@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8" />
+        
+        <title>
+            Asteroid Neo Stats
+        </title>
+        
+        <link
+            rel="stylesheet"
+            href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css"
+            integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm"
+            crossorigin="anonymous"
+        />
+
+        <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    </head>
+
+    <body>
+        <div id="app" class="container">
+            <h1 class="text-center my-5">
+                NASA Asteroid Data
+            </h1>
+
+            <div class="row justify-content-center">
+                <div class="col-md-6">
+                    <form @submit.prevent="submitForm">
+                        <div class="form-group">
+                            <label for="startDate">
+                                Start Date:
+                            </label>
+
+                            <input
+                                type="date"
+                                id="startDate"
+                                name="startDate"
+                                pattern="\d{4}-\d{2}-\d{2}"
+                                required
+                                v-model="startDate"
+                            >
+                        </div>
+
+                        <div class="form-group">
+                            <label for="endDate">
+                                End Date:
+                            </label>
+
+                            <input
+                                type="date"
+                                id="endDate"
+                                name="endDate"
+                                pattern="\d{4}-\d{2}-\d{2}"
+                                required
+                                v-model="endDate"
+                            >   
+                        </div>
+
+                        <button type="submit" class="btn btn-primary">
+                            Submit
+                        </button>
+                    </form>
+
+                    <canvas id="chart"></canvas>
+                </div>
+
+                <div class="row justify-content-center mt-5">
+                    <div class="col-md-6">
+                        <p>
+                            Fastest Asteroid: {{ fastestAsteroid.name }}
+                        </p>
+
+                        <p>
+                            Closest Asteroid: {{ closestAsteroid.name }}
+                        </p>
+
+                        <p>
+                            Average Size of Asteroids: {{ avgSize.toFixed(2) }} km
+                        </p>
+                    </div>
+                </div>
+            </div>
+            
+            <script
+                src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"
+                integrity="sha384-HwdjyOaWwUpEhJc56j+EsjOZ5A5d6S5UHHHkCYyN5oQ+u4NGV4x43/4f7V/zyz3f"
+                crossorigin="anonymous"
+            ></script>
+
+            <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+
+            <script src="app.js"></script>
+    </body>
+</html>

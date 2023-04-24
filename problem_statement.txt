@@ -1,0 +1,44 @@
+Asteroid - Neo Stats
+
+Summary
+Neo stands for Near Earth Objects. Nasa provides an open API and in this problem we will be
+using the Asteroid NeoWs API.
+We want to plot a line chart showing number of asteroids passing near earth each day for the
+given date range as well as find the nearest asteroid and the fastest asteroid.
+Data Source
+NASA’s Open API -> api.nasa.gov
+Neo Feed
+Retrieve a list of Asteroids based on their closest approach date to Earth
+api.nasa.gov/api.html#neows-feed
+
+Web Application
+This should be a single page web application. Feel free to use any reactive JS libraries like
+VueJS, AngularJS or anything you like. Use Twitter Bootstrap for the UI.
+User Story
+As a user, I want to select/enter start and end date so that I can view the Neo Stats for that date
+range.
+Provide a way (input) for the user to specify the start and end dates. Use a date picker for the
+respective form fields.
+Once the dates are selected, user will hit “Submit”. On Submit, fetch the Neo Feed from NASA’s
+open API for the given date range and plot a graph showing total number of asteroids for each
+day of the given date range. Use a bar or line chart for the same.
+
+Also show the following stats (deduced from the data you will receive from Neo Feed)
+1. Fastest Asteroid in km/h
+2. Closest Asteroid
+3. Average Size of the Asteroids in kilometers
+Use chartjs.org to plot the chart.
+
+Version Control
+Put your source code in a Git repository (Bitbucket or Github) and share the URL to the same.
+
+Deployment
+Deploy the APP on free Heroku or AWS or Azure (or any other free cloud hosting provider) and
+share the URL for testing. This is NOT compulsory but if you can do this, it will give you an
+added advantage.
+
+Notes
+● You can refer respective manuals/docs
+● You are free to get ideas from online but DO NOT copy/paste the code
+● Feel free to get in touch should you need any clarifications
+● Please follow PSR4 coding conventions.
