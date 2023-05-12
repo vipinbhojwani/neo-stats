@@ -1,11 +1,17 @@
 const express = require('express');
 const axios = require('axios');
-const Chart = require('chart.js');
+const cors = require('cors');
+
 const config = require('./config');
+
 
 const app = express();
 console.log("Express app created.");
 
+app.use(cors({
+    origin: '*'
+  }));
+  
 app.listen(3000, () => console.log('Server started on port 3000'));
 
 app.use(express.json());
@@ -25,24 +31,40 @@ app.get('/neo-stats', async(req, res) => {
 
         const dates = Object.keys(response.data.near_earth_objects);
 
-        const asteroidCount = dates.map((date) => {
-            return response.data.near_earth_objects[date].length;
+        // const asteroidCount = {};
+        // for (let date of dates) {
+        //     asteroidCount[date] = response.data.near_earth_objects[date].length;  
+        // }
+        
+        const asteroidCount = dates.sort().map((date) => {
+            return {[date]: response.data.near_earth_objects[date].length};
         });
 
         const fastestAsteroid = findFastestAsteroid(response.data.near_earth_objects);
         const closestAsteroid = findClosestAsteroid(response.data.near_earth_objects);
         const averageSize = calculateAverageSize(response.data.near_earth_objects);
-        // const chart = createLineChart(dates, asteroidCount);
 
         res.send({
-            // chart,
             'fastest_asteroid': fastestAsteroid,
             'closest_asteroid': closestAsteroid,
-            'average_size': averageSize
+            'average_size': averageSize,
+            'asteroid_count': asteroidCount,
         });
     } catch (error) {
-        console.error(error);
-        res.status(500).send('Error fetching NEO data');
+
+        if (axios.isAxiosError(error)) {
+            console.log({response: {
+                status: error.response?.status,
+                data: error.response?.data,
+              }})
+
+              res.status(error.response?.status || 500).send(error.response?.data);
+        }
+
+        else {
+            console.error(error);
+            res.status(500).send({error_message: 'Error parsing NEO data'});
+        }
     }
 });
 
@@ -87,29 +109,3 @@ function calculateAverageSize(near_earth_objects) {
 
     return totalSize / count;
 }
-
-// function createLineChart(labels, data) {
-//     const ctx = document.getElementById('chart').getContext('2d');
-
-//     return new Chart(ctx, {
-//         type: 'line',
-//         data: {
-//             labels,
-//             datasets: [{
-//                 label: 'Asteroids Passing Near Earth',
-//                 data,
-//                 backgroundColor: 'rgba(255, 99, 132, 0.2)',
-//                 borderColor: 'rgba(255, 99, 132, 1)',
-//                 borderWidth: 1
-//             }]
-//         },
-
-//         options: {
-//             scales: {
-//                 y: {
-//                     beginAtZero: true
-//                 }
-//             }
-//         }
-//     });
-// }

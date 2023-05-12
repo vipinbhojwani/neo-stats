@@ -11,8 +11,8 @@
 
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css"
         integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+    <link rel="stylesheet" href="index.css">
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.4/jquery.min.js"></script>
-
 </head>
 
 <body>
@@ -23,7 +23,7 @@
 
         <div class="row justify-content-center">
             <div class="col-md-6">
-                <form id="search-form">
+                <form id="search-form" onsubmit="return false">
                     <div class="form-group">
                         <label for="startDate">
                             Start Date:
@@ -42,27 +42,26 @@
                             required>
                     </div>
 
-                    <button class="btn btn-primary">
+                    <button class="btn" onclick="fetchAndLoadChart()">
                         Submit
                     </button>
                 </form>
-
-                <canvas id="chart"></canvas>
             </div>
         </div>
 
-        <div class="row justify-content-center mt-5">
+        <div class="row justify-content-center mt-5" id="results-stats">
+            <canvas id="chart"></canvas>
             <div class="col-md-6">
                 <p>
-                    Fastest Asteroid:
+                    Fastest Asteroid: <span id="fastestAsteroid"></span>
                 </p>
 
                 <p>
-                    Closest Asteroid:
+                    Closest Asteroid: <span id="closestAsteroid"></span>
                 </p>
 
                 <p>
-                    Average Size of Asteroids:
+                    Average Size of Asteroids: <span id="avgSize"></span>
                 </p>
             </div>
         </div>
