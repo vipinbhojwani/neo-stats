@@ -23,7 +23,7 @@
 
         <div class="row justify-content-center">
             <div class="col-md-6">
-                <form id="search-form" onsubmit="return false">
+                <form id="search-form">
                     <div class="form-group">
                         <label for="startDate">
                             Start Date:
@@ -42,7 +42,7 @@
                             required>
                     </div>
 
-                    <button class="btn" onclick="fetchAndLoadChart()">
+                    <button class="btn btn-default" type="submit">
                         Submit
                     </button>
                 </form>
@@ -72,6 +72,20 @@
         integrity="sha384-kenU1KFdBIe4zVF0s0G1M5b4hcpxyD9F7jL+jjXkk+Q2h455rYXK/7HAuoJl+0I4"
         crossorigin="anonymous"></script>
     <script src="static/index.js"></script>
+    <script>
+        window.onload = function() {
+            <% if(data) { %>
+                let data = <%- JSON.stringify(data) %>
+                let fastestAsteroid = data['fastestAsteroid']
+                let closestAsteroid = data['closestAsteroid']
+                let averageSize = data['averageSize']
+                let asteroidCount = data['asteroidCount']
+                fetchAndLoadChart(
+                fastestAsteroid, closestAsteroid, averageSize, asteroidCount
+                );
+            <% } %>
+        }
+    </script>
 </body>
 
 </html>

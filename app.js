@@ -6,7 +6,7 @@ const config = require('./config');
 
 const app = express();
 console.log("Express app created.");
-  
+
 app.listen(3000, () => console.log('Server started on port 3000'));
 
 app.use(express.json());
@@ -14,59 +14,62 @@ app.use(express.json());
 // serve static files
 app.use('/static', express.static(path.join(__dirname, 'static')))
 
-app.get('/', function(req, res) {
-  res.sendFile(path.join(__dirname, '/static/index.html'));
+app.get('/', function (req, res) {
+    res.sendFile(path.join(__dirname, '/static/index.html'));
 });
 
-// neo-stats api
-app.get('/api/v1/neo-stats', async(req, res) => {
-    const { start_date, end_date } = req.query;
-    if (!start_date || !end_date) {
-        console.log(`Bad User Input start_date: ${start_date} and end_date: ${end_date}`);
-        res.status(400).send({error: 'Provide start_date and end_date in YYYY-MM-DD format'});
+// set view engine to render dynamic HTML
+app.set('view engine', 'ejs');
+app.get('/neo-stats', async (req, res) => {
+    const { startDate, endDate } = req.query;
+    console.log(`Input startDate: ${startDate} and endDate: ${endDate}`);
+    if (!startDate || !endDate) {
+        res.render('index', {data: undefined} );
         return;
     }
 
-    const apiUrl = `https://api.nasa.gov/neo/rest/v1/feed?start_date=${start_date}&end_date=${end_date}&api_key=${config.API_KEY}`;
+    const apiUrl = `https://api.nasa.gov/neo/rest/v1/feed?startDate=${startDate}&endDate=${endDate}&api_key=${config.API_KEY}`;
 
     try {
+        console.log('calling NASA api to fetch asteroids feed')
         const response = await axios.get(apiUrl);
+        console.log(`Response: ${response}`);
 
         const dates = Object.keys(response.data.near_earth_objects);
-
-        // const asteroidCount = {};
-        // for (let date of dates) {
-        //     asteroidCount[date] = response.data.near_earth_objects[date].length;  
-        // }
-        
+        console.log(`got response from NASA api for dates ${dates}`)
         const asteroidCount = dates.sort().map((date) => {
-            return {[date]: response.data.near_earth_objects[date].length};
+            return { [date]: response.data.near_earth_objects[date].length };
         });
 
         const fastestAsteroid = findFastestAsteroid(response.data.near_earth_objects);
         const closestAsteroid = findClosestAsteroid(response.data.near_earth_objects);
         const averageSize = calculateAverageSize(response.data.near_earth_objects);
 
-        res.send({
-            'fastest_asteroid': fastestAsteroid,
-            'closest_asteroid': closestAsteroid,
-            'average_size': averageSize,
-            'asteroid_count': asteroidCount,
-        });
+        res.render('index', {
+            data: {
+                fastestAsteroid,
+                closestAsteroid,
+                averageSize,
+                asteroidCount,
+            }
+        }
+        );
     } catch (error) {
 
         if (axios.isAxiosError(error)) {
-            console.log({response: {
-                status: error.response?.status,
-                data: error.response?.data,
-              }})
+            console.log({
+                response: {
+                    status: error.response?.status,
+                    data: error.response?.data,
+                }
+            })
 
-              res.status(error.response?.status || 500).send(error.response?.data);
+            res.status(error.response?.status || 500).send(error.response?.data);
         }
 
         else {
             console.error(error);
-            res.status(500).send({error_message: 'Error parsing NEO data'});
+            res.status(500).send({ error_message: 'Error parsing NEO data' });
         }
     }
 });
