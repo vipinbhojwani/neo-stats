@@ -7,12 +7,6 @@ const closestAsteroid = document.getElementById('closestAsteroid');
 const avgSize = document.getElementById('avgSize');
 let canvasChart;
 
-// form.addEventListener('submit', (event) => {
-//     event.preventDefault();
-
-// });
-
-
 fetchAndLoadChart = () => {
     console.log(startDateInput.value);
     console.log(endDateInput.value);
@@ -33,7 +27,7 @@ fetchStats = () => {
     console.log('Fetching Stats');
     const startDate = startDateInput.value;
     const endDate = endDateInput.value;
-    const url = `http://127.0.0.1:3000/neo-stats?start_date=${startDate}&end_date=${endDate}`;
+    const url = `http://127.0.0.1:3000/api/v1/neo-stats?start_date=${startDate}&end_date=${endDate}`;
     return fetch(url)
         .then(response => {
             return response.json();
@@ -50,11 +44,6 @@ showResults = () => {
 
 refreshStats = (data) => {
     console.log('Refreshing Stats');
-    // const asteroids = Object.values(data.near_earth_objects).flat();
-    // const fastest = asteroids.reduce((prev, curr) => curr.close_approach_data[0].relative_velocity.kilometers_per_hour > prev.close_approach_data[0].relative_velocity.kilometers_per_hour ? curr : prev);
-    // const closest = asteroids.reduce((prev, curr) => curr.close_approach_data[0].miss_distance.kilometers < prev.close_approach_data[0].miss_distance.kilometers ? curr : prev);
-    // const avg = asteroids.reduce((prev, curr) => prev + curr.estimated_diameter.kilometers.estimated_diameter_min + curr.estimated_diameter.kilometers.estimated_diameter_max, 0) / asteroids.length;
-
     const fastest = data.fastest_asteroid;
     const closest = data.closest_asteroid;
     const avg = data.average_size;
@@ -66,7 +55,6 @@ refreshStats = (data) => {
 refreshChart = (data) => {
     console.log('Refreshing Chart');
     const asteroids = data.asteroid_count;
-    // (a.estimated_diameter.kilometers.estimated_diameter_min + a.estimated_diameter.kilometers.estimated_diameter_max) / 2
     const counts = asteroids.map(a => Object.values(a)[0]);
     const labels = asteroids.map(a => Object.keys(a)[0]);
     const ctx = chart.getContext('2d');

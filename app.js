@@ -1,22 +1,25 @@
 const express = require('express');
 const axios = require('axios');
-const cors = require('cors');
+const path = require('path');
 
 const config = require('./config');
 
-
 const app = express();
 console.log("Express app created.");
-
-app.use(cors({
-    origin: '*'
-  }));
   
 app.listen(3000, () => console.log('Server started on port 3000'));
 
 app.use(express.json());
 
-app.get('/neo-stats', async(req, res) => {
+// serve static files
+app.use('/static', express.static(path.join(__dirname, 'static')))
+
+app.get('/', function(req, res) {
+  res.sendFile(path.join(__dirname, '/static/index.html'));
+});
+
+// neo-stats api
+app.get('/api/v1/neo-stats', async(req, res) => {
     const { start_date, end_date } = req.query;
     if (!start_date || !end_date) {
         console.log(`Bad User Input start_date: ${start_date} and end_date: ${end_date}`);
