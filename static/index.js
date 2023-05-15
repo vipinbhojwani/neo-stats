@@ -8,18 +8,32 @@ const avgSize = document.getElementById('avgSize');
 let canvasChart;
 
 fetchAndLoadChart = (fastestAsteroid, closestAsteroid, averageSize, asteroidCount) => {
-    hideResults();
     refreshStats(fastestAsteroid, closestAsteroid, averageSize);
     refreshChart(asteroidCount);
     showResults();
 }
 
-hideResults = () => {
-    $("#results-stats").hide();
+setInputValuesFromUrlParams = () => {
+    var urlParams = new URLSearchParams(window.location.search);
+
+    var startDate = urlParams.get("startDate");
+    var endDate = urlParams.get("endDate");
+
+    if (startDate) {
+        $("#startDate").val(startDate);
+    }
+    if(endDate) {
+        $("#endDate").val(endDate);
+    }
 }
 
 showResults = () => {
     $("#results-stats").show();
+}
+
+showError = (message) => {
+    $("#error").text(message);
+    $("#error").show();
 }
 
 refreshStats = (fastestAsteroid, closestAsteroid, averageSize) => {

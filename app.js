@@ -14,22 +14,17 @@ app.use(express.json());
 // serve static files
 app.use('/static', express.static(path.join(__dirname, 'static')))
 
-app.get('/', function (req, res) {
-    res.sendFile(path.join(__dirname, '/static/index.html'));
-});
-
 // set view engine to render dynamic HTML
 app.set('view engine', 'ejs');
 app.get('/neo-stats', async (req, res) => {
     const { startDate, endDate } = req.query;
     console.log(`Input startDate: ${startDate} and endDate: ${endDate}`);
     if (!startDate || !endDate) {
-        res.render('index', {data: undefined} );
+        res.render('index', {data: undefined, error: undefined} );
         return;
     }
 
-    const apiUrl = `https://api.nasa.gov/neo/rest/v1/feed?startDate=${startDate}&endDate=${endDate}&api_key=${config.API_KEY}`;
-
+    const apiUrl = `https://api.nasa.gov/neo/rest/v1/feed?start_date=${startDate}&end_date=${endDate}&api_key=${config.API_KEY}`;
     try {
         console.log('calling NASA api to fetch asteroids feed')
         const response = await axios.get(apiUrl);
@@ -51,9 +46,8 @@ app.get('/neo-stats', async (req, res) => {
                 closestAsteroid,
                 averageSize,
                 asteroidCount,
-            }
-        }
-        );
+            }, error: undefined
+        });
     } catch (error) {
 
         if (axios.isAxiosError(error)) {
@@ -64,12 +58,22 @@ app.get('/neo-stats', async (req, res) => {
                 }
             })
 
-            res.status(error.response?.status || 500).send(error.response?.data);
+            res.render('index', {
+                data: undefined, error: {
+                    status: error.response?.status || 500,
+                    message: error.response?.data.error_message,
+                }
+            });
         }
 
         else {
             console.error(error);
-            res.status(500).send({ error_message: 'Error parsing NEO data' });
+            res.render('index', {
+                data: undefined, error: {
+                    status: 500,
+                    message: 'Error parsing NEO data',
+                }
+            });
         }
     }
 });

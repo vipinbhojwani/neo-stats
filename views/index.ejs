@@ -23,6 +23,7 @@
 
         <div class="row justify-content-center">
             <div class="col-md-6">
+                <div  id="error" class="alert alert-danger" role="alert"></div>
                 <form id="search-form">
                     <div class="form-group">
                         <label for="startDate">
@@ -74,6 +75,7 @@
     <script src="static/index.js"></script>
     <script>
         window.onload = function() {
+            setInputValuesFromUrlParams();
             <% if(data) { %>
                 let data = <%- JSON.stringify(data) %>
                 let fastestAsteroid = data['fastestAsteroid']
@@ -83,6 +85,11 @@
                 fetchAndLoadChart(
                 fastestAsteroid, closestAsteroid, averageSize, asteroidCount
                 );
+            <% } %>
+            <% if(error) { %>
+                let error = <%- JSON.stringify(error) %>
+                let message = `Status: ${error.status}, Message: ${error.message}`
+                showError(message);
             <% } %>
         }
     </script>
